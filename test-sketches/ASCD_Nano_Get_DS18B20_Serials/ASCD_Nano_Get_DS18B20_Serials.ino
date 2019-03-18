@@ -18,7 +18,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#define ONE_WIRE_BUS 4 // Pin 4 for Version 1.11+
+#define ONE_WIRE_BUS 4 // Pin 4 for PCB Version 1.11+
 #define TEMPERATURE_PRECISION 9
 
 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
@@ -40,13 +40,13 @@ byte pendingDetection = 0; // This will be from Battery 1 to 8 and then 9 for th
 void setup(void)
 {
   // start serial port
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Dallas Temperature Detection");
 
   // Start up the library
   sensors.begin();
 
-  // locate devices on the bus
+  // Locate devices on the bus
   Serial.print("Locating devices...");
   Serial.print("Found ");
   Serial.print(sensors.getDeviceCount(), DEC);
@@ -62,11 +62,6 @@ void setup(void)
     Serial.println(" Sensors should exist.");
     while(1);
   }
-  //deviceCount = sensors.getDeviceCount();
-  // report parasite power requirements
-  Serial.print("Parasite power is: "); 
-  if (sensors.isParasitePowerMode()) Serial.println("ON");
-  else Serial.println("OFF");
 
   oneWire.reset_search();
 
@@ -83,7 +78,6 @@ void setup(void)
     printAddress(tempSensorSerial[i]);
     Serial.println();
     sensors.setResolution(tempSensorSerial[i], TEMPERATURE_PRECISION);
-    
   }
 
   sensors.requestTemperatures();
@@ -95,7 +89,7 @@ void setup(void)
 
 }
 
-// function to print a device address
+// Function to print a device address
 void printAddress(DeviceAddress deviceAddress)
 {
   Serial.print("{");
@@ -109,7 +103,7 @@ void printAddress(DeviceAddress deviceAddress)
   Serial.println("},"); 
 }
 
-// function to print the temperature for a device
+// Function to print the temperature for a device
 void printTemperature(DeviceAddress deviceAddress)
 {
   float tempC = sensors.getTempC(deviceAddress);
@@ -119,7 +113,7 @@ void printTemperature(DeviceAddress deviceAddress)
   //Serial.print(DallasTemperature::toFahrenheit(tempC));
 }
 
-// function to print a device's resolution
+// Function to print a device's resolution
 void printResolution(DeviceAddress deviceAddress)
 {
   Serial.print("Resolution: ");
@@ -127,7 +121,7 @@ void printResolution(DeviceAddress deviceAddress)
   Serial.println();    
 }
 
-// main function to print information about a device
+// Main function to print information about a device
 void printData(DeviceAddress deviceAddress)
 {
   Serial.print("Device Address: ");
