@@ -1,26 +1,24 @@
-// Get DS18B20 Serials
-// Version 1.0.0
+// ASDC Nano 4x Arduino Charger / Discharger
 // ---------------------------------------------------------------------------
-// Created by Brett Watt on 01/02/2019
+// Created by Brett Watt on 19/03/2019
 // Copyright 2018 - Under creative commons license 3.0:
 //
-// This software is furnished "as is", without technical support, and with no 
+// This software is furnished "as is", without technical support, and with no
 // warranty, express or implied, as to its usefulness for any purpose.
-// 
-// @brief 
-// This is the Arduino Nano 4x Charger Discharger Code for getting the Dallas DS18B20 Serials
 //
-// Heat each individual sensor then copy and paste the serial array into the ASCD Nano Sketch
+// @brief
+// ASDC Nano 4x Arduino Charger / Discharger
+// Code for getting the Dallas DS18B20 Serials
+// Version 1.0.0
 //
-// @author Email: info@vortexit.co.nz 
+// @author Email: info@vortexit.co.nz
 //       Web: www.vortexit.co.nz
 
 // Include the libraries we need
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-// Data wire is plugged into port 2 on the Arduino
-#define ONE_WIRE_BUS 4 // Pin 2 Temperature Sensors | Pin 4 for Version 2.0
+#define ONE_WIRE_BUS 4 // Pin 4 for Version 1.11+
 #define TEMPERATURE_PRECISION 9
 
 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
@@ -30,14 +28,13 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 // arrays to hold device addresses
-//DeviceAddress insideThermometer, outsideThermometer;
 DeviceAddress tempSensorSerial[9];
 
-byte deviceCount = 5; // 9 in the Arduino Charger / Discharger
+byte deviceCount = 5; // 5 in the ASDC Nano 4x Arduino Charger / Discharger
 float sensorTempAverage = 0;
 bool tempSensorSerialCompleted[10];
 bool detectionComplete = false;
-byte tempSensorSerialOutput[9]; //Sensors 1 - 9
+byte tempSensorSerialOutput[5]; //Sensors 1 - 5
 byte pendingDetection = 0; // This will be from Battery 1 to 8 and then 9 for the ambient temperature
 
 void setup(void)

@@ -1,13 +1,14 @@
-// Arduino Nano Smart Charger / Discharger
+// ASDC Nano 4x Arduino Charger / Discharger
 // ---------------------------------------------------------------------------
-// Created by Brett Watt on 24/10/2018
+// Created by Brett Watt on 19/03/2019
 // Copyright 2018 - Under creative commons license 3.0:
 //
 // This software is furnished "as is", without technical support, and with no
 // warranty, express or implied, as to its usefulness for any purpose.
 //
 // @brief
-// Arduino Nano 4x Smart Charger / Discharger
+// ASDC Nano 4x Arduino Charger / Discharger
+// Main code for the Arduino Nano 3.0 ATmega328P
 // Version 1.0.0
 //
 // @author Email: info@vortexit.co.nz
