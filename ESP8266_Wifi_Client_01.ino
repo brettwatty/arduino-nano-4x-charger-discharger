@@ -1,14 +1,14 @@
 #include <ESP8266WiFi.h>
 
 // Wifi Variables
-const char ssid[]   = "";      			// SSID
-const char password[] = "";      		// Password
-const char server[] = "submit.vortexit.co.nz";  // Server to connect to send and recieve data
-const char userHash[] = "";    			// Database Hash - this is unique per user - Get this from Charger / Discharger Menu -> View
-const byte CDUnitID = 0;    			// CDUnitID this is the Units ID - this is unique per user - Get this from Charger / Discharger Menu -> View -> Select your Charger / Discharger
+const char ssid[] = "";                        // SSID
+const char password[] = "";                    // Password
+const char server[] = "submit.vortexit.co.nz"; // Server to connect to send and recieve data
+const char userHash[] = "";                    // Database Hash - this is unique per user - Get this from Charger / Discharger Menu -> View
+const byte CDUnitID = 0;                       // CDUnitID this is the Units ID - this is unique per user - Get this from Charger / Discharger Menu -> View -> Select your Charger / Discharger
 
 // readPage Variables
-char serverResult[32]; 	// String for incoming serial data
+char serverResult[32];  // String for incoming serial data
 int stringPosition = 0; // String index counter readPage()
 bool startRead = false; // Is reading? readPage()
 
@@ -16,19 +16,21 @@ String updateUnitDataString = "";
 
 WiFiClient client;
 
-void setup() {
+void setup()
+{
   Serial.begin(57600);
   Serial.setTimeout(5);
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+  //Serial.print("Connecting to ");
+  //Serial.println(ssid);
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
   }
-  Serial.println("");
-  Serial.println("WiFi connected");  
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
+  //Serial.println("");
+  //Serial.println("WiFi connected");
+  //Serial.println("IP address: ");
+  //Serial.println(WiFi.localIP());
 }
 
 void loop()
@@ -36,20 +38,22 @@ void loop()
   if (updateUnitDataString != "")
   {
     String resultUpdateUnitData = updateUnitData();
-	updateUnitDataString = "";
-	Serial.println(resultUpdateUnitData);
-  } else {
-    while(Serial.available())
+    updateUnitDataString = "";
+    Serial.println(resultUpdateUnitData);
+  }
+  else
+  {
+    while (Serial.available())
     {
-      updateUnitDataString = Serial.readString();// read the incoming data as string
+      updateUnitDataString = Serial.readString(); // read the incoming data as string
       updateUnitDataString.trim();
     }
-  } 
+  }
 }
 
 String updateUnitData()
 {
-  if (client.connect(server, 80)) 
+  if (client.connect(server, 80))
   {
     client.print("GET /update_unit_data.php?");
     client.print("UH=");
@@ -65,7 +69,9 @@ String updateUnitData()
     client.println();
     client.println();
     return readPage();
-  } else {
+  }
+  else
+  {
     return "1";
   }
 }
@@ -73,24 +79,28 @@ String updateUnitData()
 String readPage()
 {
   stringPosition = 0;
-  unsigned long startTime = millis(); 
-  memset( &serverResult, 0, 32 ); //Clear serverResult memory
-  while(true)
+  unsigned long startTime = millis();
+  memset(&serverResult, 0, 32); //Clear serverResult memory
+  while (true)
   {
     if (millis() < startTime + 3750) // Time out of 3750 milliseconds (Possible cause of crash on Ethernet)
     {
       if (client.available())
       {
         char c = client.read();
-        if (c == '<' )  //'<' Start character
+        if (c == '<') //'<' Start character
         {
-          startRead = true; //Ready to start reading the part 
-        } else if (startRead) {
-          if(c != '>') //'>' End character
+          startRead = true; //Ready to start reading the part
+        }
+        else if (startRead)
+        {
+          if (c != '>') //'>' End character
           {
             serverResult[stringPosition] = c;
-            stringPosition ++;
-          } else {
+            stringPosition++;
+          }
+          else
+          {
             startRead = false;
             client.stop();
             client.flush();
@@ -98,10 +108,12 @@ String readPage()
           }
         }
       }
-    } else {
+    }
+    else
+    {
       client.stop();
       client.flush();
       return "2"; //TIMEOUT
     }
-  }                                                                                                        
+  }
 }
