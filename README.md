@@ -17,6 +17,8 @@ Arduino Nano 3.0 ATmega328P:
 
 Upload sketch "ASCD_Nano_1-0-0.ino" to the Arduino Nano
 
+You may need to use ATmega328P (Old boot loader) as the processor in Arduino IDE
+
 ---------------------------------------------------------------------------
 
 ESP8266 ESP-01:
