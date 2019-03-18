@@ -455,10 +455,10 @@ void cycleStateValues()
 				module[i].cycleCount++;
 			if (module[i].cycleCount == 5)
 			{
+				initializeVariables(i);
 				module[i].batteryCurrentTemp = getTemperature(i);
 				module[i].batteryInitialTemp = module[i].batteryCurrentTemp;
 				module[i].batteryHighestTemp = module[i].batteryCurrentTemp;
-				initializeVariables(i);
 				clearSecondsTimer(i);
 				module[i].batteryVoltage = readMux(module[i].batteryVolatgePin); // Get battery voltage for Charge Cycle
 				module[i].batteryInitialVoltage = module[i].batteryVoltage;
@@ -815,10 +815,8 @@ byte processTemperature(byte j)
 	module[j].batteryCurrentTemp = getTemperature(j);
 	if (module[j].batteryCurrentTemp > module[j].batteryHighestTemp)
 		module[j].batteryHighestTemp = module[j].batteryCurrentTemp; // Set highest temperature if current value is higher
-	// if ((module[j].batteryCurrentTemp - module[j].batteryInitialTemp) > settings.tempThreshold)
 	if ((module[j].batteryCurrentTemp - ambientTemperature) > settings.tempThreshold)
 	{
-		// if ((module[j].batteryCurrentTemp - module[j].batteryInitialTemp) > settings.tempMaxThreshold)
 		if ((module[j].batteryCurrentTemp - ambientTemperature) > settings.tempMaxThreshold)
 		{
 			//Temp higher than Maximum Threshold
