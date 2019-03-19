@@ -8,13 +8,13 @@
 //
 // @brief
 // ASDC Nano 4x Arduino Charger / Discharger
-// Dallas Temperature Sensor Seiral header file
+// Dallas Temperature Sensor Serial header file
 // Version 1.0.0
 //
 // @author Email: info@vortexit.co.nz
 //       Web: www.vortexit.co.nz
 
-// You need to run the Dallas get temp sensors sketch (ASCD_Test_Get_DS18B20_Serials.ino) to get your DS serails
+// You need to run the Dallas get temp sensors sketch (ASCD_Nano_Get_DS18B20_Serials.ino) to get your DS serails
 DeviceAddress tempSensorSerial[5] =
 {
     {0x28, 0x81, 0xCB, 0x79, 0x97, 0x05, 0x03, 0xE5},
