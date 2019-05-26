@@ -115,8 +115,9 @@ Modules module[4] =
 
 typedef struct
 {
-	const float shuntResistor[4] = {3.3, 3.3, 3.3, 3.3};
-	const float referenceVoltage = 5.01;		   // 5V Output of Arduino
+	//const float shuntResistor[4] = {3.3, 3.3, 3.3, 3.3};
+	const float shuntResistor[4] = {3.33, 3.35, 3.38, 3.4};
+	const float referenceVoltage = 5.02;		   // 5V Output of Arduino
 	const float defaultBatteryCutOffVoltage = 2.8; // Voltage that the discharge stops
 	const byte restTimeMinutes = 1;				   // The time in Minutes to rest the battery after charge. 0-59 are valid
 	const int lowMilliamps = 1000;				   //  This is the value of Milli Amps that is considered low and does not get recharged because it is considered faulty
@@ -267,8 +268,8 @@ void buzzer()
 
 void fanController()
 {
-	const byte fanTempMin = 25; // The temperature to start the fan
-	const byte fanTempMax = 35; // The maximum temperature when fan is at 100%
+	const byte fanTempMin = 28; // The temperature to start the fan
+	const byte fanTempMax = 38; // The maximum temperature when fan is at 100%
 	if (ambientTemperature < fanTempMin)
 	{
 		digitalWrite(FAN, LOW);
@@ -486,11 +487,11 @@ void cycleStateValues()
 			if (processTemperature(i) == 2)
 			{
 				//Battery Temperature is >= MAX Threshold considered faulty
-				digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP4056
+				digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP5100
 				module[i].batteryFaultCode = 7;				 // Set the Battery Fault Code to 7 High Temperature
 				if (module[i].insertData == true)
 				{
-					clearSecondsTimer(i);
+					// clearSecondsTimer(i);
 					module[i].insertData = false;
 					module[i].cycleState = 7; // Temperature is to high. Battery is considered faulty set cycleState to Completed
 					module[i].cycleCount = 0; // Reset cycleCount for use in other Cycles
@@ -499,14 +500,14 @@ void cycleStateValues()
 			}
 			else
 			{
-				digitalSwitch(module[i].chargeMosfetPin, 1); // Turn on TP4056
+				digitalSwitch(module[i].chargeMosfetPin, 1); // Turn on TP5100
 				module[i].cycleCount = module[i].cycleCount + chargeCycle(i);
 				if (module[i].cycleCount >= 5)
 				{
-					digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP4056
+					digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP5100
 					if (module[i].insertData == true)
 					{
-						clearSecondsTimer(i);
+						// clearSecondsTimer(i);
 						module[i].insertData = false;
 						module[i].cycleState = 3; // Charge Battery Completed set cycleState to Check Battery Milli Ohms
 						module[i].cycleCount = 0; // Reset cycleCount for use in other Cycles
@@ -514,13 +515,13 @@ void cycleStateValues()
 					sprintf_P(serialSendString + strlen(serialSendString), PSTR("&ID%d"), i);
 				}
 			}
-			if (module[i].hours == settings.chargingTimeout) // Charging has reached Timeout period. Either battery will not hold charge, has high capacity or the TP4056 is faulty
+			if (module[i].hours == settings.chargingTimeout) // Charging has reached Timeout period. Either battery will not hold charge, has high capacity or the TP5100 is faulty
 			{
-				digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP4056
+				digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP5100
 				module[i].batteryFaultCode = 9;				 // Set the Battery Fault Code to 7 Charging Timeout
 				if (module[i].insertData == true)
 				{
-					clearSecondsTimer(i);
+					// clearSecondsTimer(i);
 					module[i].insertData = false;
 					module[i].cycleState = 7; // Charging Timeout. Battery is considered faulty set cycleState to Completed
 					module[i].cycleCount = 0; // Reset cycleCount for use in other Cycles
@@ -552,8 +553,8 @@ void cycleStateValues()
 						module[i].cycleState = 4; // Check Battery Milli Ohms Completed set cycleState to Rest Battery
 						module[i].cycleCount = 0; // Reset cycleCount for use in other Cycles
 					}
-					clearSecondsTimer(i);
 				}
+				clearSecondsTimer(i);
 			}
 			sprintf_P(serialSendString + strlen(serialSendString), PSTR("&CS%d=3&MO%d=%d&CV%d=%d.%02d"), i, i, (int)module[i].milliOhmsValue, i, (int)module[i].batteryVoltage, (int)(module[i].batteryVoltage * 100) % 100);
 			break;
@@ -624,7 +625,7 @@ void cycleStateValues()
 			if (processTemperature(i) == 2)
 			{
 				//Battery Temperature is >= MAX Threshold considered faulty
-				digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP4056
+				digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP5100
 				module[i].batteryFaultCode = 7;				 // Set the Battery Fault Code to 7 High Temperature
 				if (module[i].insertData == true)
 				{
@@ -637,11 +638,11 @@ void cycleStateValues()
 			}
 			else
 			{
-				digitalSwitch(module[i].chargeMosfetPin, 1); // Turn on TP4056
+				digitalSwitch(module[i].chargeMosfetPin, 1); // Turn on TP5100
 				module[i].cycleCount = module[i].cycleCount + chargeCycle(i);
 				if (module[i].cycleCount >= 5)
 				{
-					digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP4056
+					digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP5100
 					if (module[i].insertData == true)
 					{
 						clearSecondsTimer(i);
@@ -652,9 +653,9 @@ void cycleStateValues()
 					sprintf_P(serialSendString + strlen(serialSendString), PSTR("&ID%d"), i);
 				}
 			}
-			if (module[i].hours == settings.chargingTimeout) // Charging has reached Timeout period. Either battery will not hold charge, has high capacity or the TP4056 is faulty
+			if (module[i].hours == settings.chargingTimeout) // Charging has reached Timeout period. Either battery will not hold charge, has high capacity or the TP5100 is faulty
 			{
-				digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP4056
+				digitalSwitch(module[i].chargeMosfetPin, 0); // Turn off TP5100
 				module[i].batteryFaultCode = 9;				 // Set the Battery Fault Code to 7 Charging Timeout
 				if (module[i].insertData == true)
 				{
