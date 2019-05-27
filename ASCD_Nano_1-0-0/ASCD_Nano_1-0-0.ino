@@ -589,7 +589,6 @@ void cycleStateValues()
 			{
 				if (module[i].dischargeCompleted == true)
 				{
-					sprintf_P(serialSendString + strlen(serialSendString), PSTR("&ID%d"), i);
 					if (module[i].dischargeMilliamps < settings.lowMilliamps) // No need to recharge the battery if it has low Milliamps
 					{
 						module[i].batteryFaultCode = 5; // Set the Battery Fault Code to 5 Low Milliamps
@@ -611,6 +610,7 @@ void cycleStateValues()
 							module[i].cycleState = 6; // Discharge Battery Completed set cycleState to Recharge Battery
 						}
 					}
+					sprintf_P(serialSendString + strlen(serialSendString), PSTR("&ID%d"), i);
 				}
 				else
 				{
