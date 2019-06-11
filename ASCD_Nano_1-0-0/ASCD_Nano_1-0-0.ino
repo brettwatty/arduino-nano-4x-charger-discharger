@@ -598,6 +598,7 @@ void cycleStateValues()
 							module[i].insertData = false;
 							module[i].cycleState = 7; // Discharge Battery Completed set cycleState to Completed
 						}
+						sprintf_P(serialSendString + strlen(serialSendString), PSTR("&ID%d"), i);
 					}
 					else
 					{
@@ -609,8 +610,8 @@ void cycleStateValues()
 							module[i].insertData = false;
 							module[i].cycleState = 6; // Discharge Battery Completed set cycleState to Recharge Battery
 						}
+						sprintf_P(serialSendString + strlen(serialSendString), PSTR("&ID%d"), i);
 					}
-					sprintf_P(serialSendString + strlen(serialSendString), PSTR("&ID%d"), i);
 				}
 				else
 				{
