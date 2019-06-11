@@ -9,6 +9,13 @@
 // @brief
 // ASDC Nano 4x Arduino Charger / Discharger
 // Code for getting the Mid Voltage (Between Change On / Off) for the TP5100 Chargers
+// 
+// 1. Remove any batteries
+// 2. Upload this Sketch to the Nano
+// 3. Remove the USB cable
+// 4. Insert a 12V Power Supply into the DC Jack
+// 5. Note the Mid Volt per module. Change it in the ASCD_Nano Main sketch in CustomSettings struct -> e.g. const float chargeLedPinMidVolatge[4] = {1.83, 1.77, 1.85, 1.85};
+// 
 // Version 1.0.0
 //
 // @author Email: info@vortexit.co.nz

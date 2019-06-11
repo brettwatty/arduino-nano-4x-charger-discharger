@@ -117,6 +117,7 @@ typedef struct
 {
 	//const float shuntResistor[4] = {3.3, 3.3, 3.3, 3.3};
 	const float shuntResistor[4] = {3.33, 3.35, 3.38, 3.4};
+	const float chargeLedPinMidVolatge[4] = {1.8, 1.8, 1.85, 1.85}; 	// Array for each Mid On / Off Voltage of the TP5100 Charge LED Pins
 	const float referenceVoltage = 5.02;		   // 5V Output of Arduino
 	const float defaultBatteryCutOffVoltage = 2.8; // Voltage that the discharge stops
 	const byte restTimeMinutes = 1;				   // The time in Minutes to rest the battery after charge. 0-59 are valid
@@ -796,7 +797,7 @@ byte milliOhms(byte j)
 
 bool chargeCycle(byte j)
 {
-	if (readMux(module[j].chargeLedPin) >= 1.8) // Need to define this in Settings
+	if (readMux(module[j].chargeLedPin) >= settings.chargeLedPinMidVolatge[j]) // Need to define this in Settings
 	{
 		return 1;
 	}
