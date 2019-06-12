@@ -9,13 +9,14 @@
 // @brief
 // ASDC Nano 4x Arduino Charger / Discharger
 // Code for getting the Mid Voltage (Between Change On / Off) for the TP5100 Chargers
-// 
-// 1. Remove any batteries
-// 2. Upload this Sketch to the Nano
-// 3. Remove the USB cable
-// 4. Insert a 12V Power Supply into the DC Jack
-// 5. Note the Mid Volt per module. Change it in the ASCD_Nano Main sketch in CustomSettings struct -> e.g. const float chargeLedPinMidVolatge[4] = {1.83, 1.77, 1.85, 1.85};
-// 
+//
+// 1. Change the value "const float referenceVoltage = 5.02;" on line 63 to match you Arduino's 5V output. Also make sure it is the same in you ASCD_Nano Main Sketch
+// 2. Remove any batteries
+// 3. Upload this Sketch to the Nano
+// 4. Remove the USB cable
+// 5. Insert a 12V Power Supply into the DC Jack
+// 6. Note the Mid Volt per module. Change it in the ASCD_Nano Main sketch in CustomSettings struct -> e.g. const float chargeLedPinMidVolatge[4] = {1.83, 1.77, 1.85, 1.85};
+//
 // Version 1.0.0
 //
 // @author Email: info@vortexit.co.nz
@@ -59,8 +60,8 @@ Modules module[4] =
 
 typedef struct
 {
-    const float voltageAREF = 1.091; // 1.1v Internal Regulator AREF measured Voltage
-    const byte moduleCount = 4;      // Number of Modules
+    const float referenceVoltage = 5.01; // 5V Output of Arduino
+    const byte moduleCount = 4;          // Number of Modules
 } CustomSettings;
 
 CustomSettings settings;
@@ -116,7 +117,7 @@ void setup()
         lcd.print(tempCPin);
         lcd.setCursor(14, 1);
         lcd.print(F("V "));
-        chargeLedPinMid[i] = (chargeLedPinOff + chargeLedPinOn) / 2;
+        chargeLedPinMid[i] = (((chargeLedPinOff + chargeLedPinOn) / 2) + chargeLedPinOff) / 2;
         digitalSwitch(module[i].chargeMosfetPin, 0);
         digitalSwitch(module[i].dischargeMosfetPin, 0);
         delay(2000);
@@ -164,43 +165,19 @@ void digitalSwitch(byte j, bool value)
 
 float readMux(bool inputArray[])
 {
-    const byte controlPin[] = {S0, S1, S2, S3};
+	const byte controlPin[] = {S0, S1, S2, S3};
 
-    // Loop through the 4 sig
-    for (byte i = 0; i < 4; i++)
-    {
-        digitalWrite(controlPin[i], inputArray[i]);
-    }
-    // Read the value at the SIG pin 10x and convert to voltage
-    float batterySampleVoltage = 0.00;
-    for (byte i = 0; i < 10; i++)
-    {
-        if (i > 1)
-            batterySampleVoltage = batterySampleVoltage + (analogRead(SIG) * readVcc() / 1024); // Dispose of the first 2x readings
-    }
-    batterySampleVoltage = (batterySampleVoltage / 8);
-    return batterySampleVoltage; // Calculate and return the Voltage Reading
-    //return batterySampleVoltage * settings.referenceVoltage / 1023.0; // Calculate and return the Voltage Reading
-}
-
-float readVcc()
-{
-    long result;
-    // Read 1.1V reference against AVcc
-#if defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-    ADMUX = _BV(REFS0) | _BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
-#elif defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
-    ADMUX = _BV(MUX5) | _BV(MUX0);
-#elif defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
-    ADMUX = _BV(MUX3) | _BV(MUX2);
-#else
-    ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
-#endif
-    delay(2);            // Wait for Vref to settle
-    ADCSRA |= _BV(ADSC); // Convert
-    while (bit_is_set(ADCSRA, ADSC))
-        ;
-    result = ADCL;
-    result |= ADCH << 8;
-    return ((settings.voltageAREF * 1024 * 1000) / result) / 1000; // Calculate Vcc (in mV); 1126400 = 1.1*1024*1000
+	// Loop through the 4 sig
+	for (byte i = 0; i < 4; i++)
+	{
+		digitalWrite(controlPin[i], inputArray[i]);
+	}
+	// Read the value at the SIG pin 10x and convert to voltage
+	float batterySampleVoltage = 0.00;
+	for (byte i = 0; i < 10; i++)
+	{
+		batterySampleVoltage = batterySampleVoltage + analogRead(SIG);
+	}
+	batterySampleVoltage = batterySampleVoltage / 10;
+	return batterySampleVoltage * settings.referenceVoltage / 1023.0; // Calculate and return the Voltage Reading
 }
