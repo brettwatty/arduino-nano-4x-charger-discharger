@@ -60,7 +60,7 @@ Modules module[4] =
 
 typedef struct
 {
-    const float referenceVoltage = 5.01; // 5V Output of Arduino
+    const float referenceVoltage = 5.05; // 5V Output of Arduino
     const byte moduleCount = 4;          // Number of Modules
 } CustomSettings;
 

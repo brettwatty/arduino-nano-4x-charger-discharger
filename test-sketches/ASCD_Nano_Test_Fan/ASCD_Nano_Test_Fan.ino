@@ -56,7 +56,7 @@ void fanController()
   }
   else if (ambientTemperature < fanTempMax)
   {
-    byte fanSpeed = map(ambientTemperature, fanTempMin, fanTempMax, 41, 100);
+    byte fanSpeed = map(ambientTemperature, fanTempMin, fanTempMax, 50, 200);
     Serial.print("FAN Speed:");
     Serial.println(fanSpeed);
     analogWrite(FAN, fanSpeed); // PWM speed control the FAN pin
