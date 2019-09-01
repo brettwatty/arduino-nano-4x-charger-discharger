@@ -125,11 +125,12 @@ typedef struct
 	const int offsetMilliOhms = 0;				   // Offset calibration for MilliOhms
 	const byte chargingTimeout = 8;				   // The timeout in Hours for charging
 	const byte tempThreshold = 7;				   // Warning Threshold in degrees above initial Temperature
-	const byte tempMaxThreshold = 20;			   //Maximum Threshold in degrees above initial Temperature - Considered Faulty
-	const float batteryVolatgeLeak = 0.50;		   // On the initial screen "BATTERY CHECK" observe the highest voltage of each module and set this value slightly higher
-	const byte moduleCount = 4;					   // Number of Modules
-	const byte screenTime = 4;					   // Time in Seconds (Cycles) per Active Screen
-	const int dischargeReadInterval = 5000;		   // Time intervals between Discharge readings. Adjust for mAh +/-
+	const byte tempMaxThreshold = 20;				//Maximum Threshold in degrees above initial Temperature - Considered Faulty
+	const float batteryVolatgeLeak = 0.50;			// On the initial screen "BATTERY CHECK" observe the highest voltage of each module and set this value slightly higher
+	const byte moduleCount = 4;						// Number of Modules
+	const byte screenTime = 4;						// Time in Seconds (Cycles) per Active Screen
+	const int dischargeReadInterval = 5000;			// Time intervals between Discharge readings. Adjust for mAh +/-
+	const float storageChargeVoltage = 0.00; 	// Storage charge voltage for recharge cycle. Use 0.00 for no storage charge
 } CustomSettings;
 
 CustomSettings settings;
@@ -861,7 +862,7 @@ byte getTemperature(byte j)
 void getAmbientTemperature()
 {
     static byte ambientTempCount;
-    if (ambientTempCount > 16 || ambientTemperature == 0 || module[j].batteryCurrentTemp == 99) // Read every 16x cycles
+    if (ambientTempCount > 16 || ambientTemperature == 0) // Read every 16x cycles
     {
         ambientTempCount = 0;
         sensors.requestTemperaturesByAddress(tempSensorSerial[8]);
