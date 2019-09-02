@@ -868,8 +868,8 @@ void getAmbientTemperature()
 	if (ambientTempCount > 16 || ambientTemperature == 0 || ambientTemperature == 99) // Read every 16x cycles
 	{
 		ambientTempCount = 0;
-		sensors.requestTemperaturesByAddress(tempSensorSerial[5]);
-		float tempC = sensors.getTempC(tempSensorSerial[5]);
+		sensors.requestTemperaturesByAddress(tempSensorSerial[4]);
+		float tempC = sensors.getTempC(tempSensorSerial[4]);
 		if (tempC > 99 || tempC < 0)
 			tempC = 99;
 		if (ambientTemperature != 99)
