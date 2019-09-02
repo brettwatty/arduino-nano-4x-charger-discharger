@@ -116,21 +116,21 @@ Modules module[4] =
 typedef struct
 {
 	const float shuntResistor[4] = {3.3, 3.3, 3.3, 3.3};
-	const float chargeLedPinMidVolatge[4] = {1.8, 1.8, 1.85, 1.85}; 	// Array for each Mid On / Off Voltage of the TP5100 Charge LED Pins
-	const float referenceVoltage = 5.02;		   // 5V Output of Arduino
-	const float defaultBatteryCutOffVoltage = 2.8; // Voltage that the discharge stops
-	const byte restTimeMinutes = 1;				   // The time in Minutes to rest the battery after charge. 0-59 are valid
-	const int lowMilliamps = 1000;				   //  This is the value of Milli Amps that is considered low and does not get recharged because it is considered faulty
-	const int highMilliOhms = 500;				   //  This is the value of Milli Ohms that is considered high and the battery is considered faulty
-	const int offsetMilliOhms = 0;				   // Offset calibration for MilliOhms
-	const byte chargingTimeout = 8;				   // The timeout in Hours for charging
-	const byte tempThreshold = 7;				   // Warning Threshold in degrees above initial Temperature
-	const byte tempMaxThreshold = 20;				//Maximum Threshold in degrees above initial Temperature - Considered Faulty
-	const float batteryVolatgeLeak = 0.50;			// On the initial screen "BATTERY CHECK" observe the highest voltage of each module and set this value slightly higher
-	const byte moduleCount = 4;						// Number of Modules
-	const byte screenTime = 4;						// Time in Seconds (Cycles) per Active Screen
-	const int dischargeReadInterval = 5000;			// Time intervals between Discharge readings. Adjust for mAh +/-
-	const float storageChargeVoltage = 0.00; 	// Storage charge voltage for recharge cycle. Use 0.00 for no storage charge
+	const float chargeLedPinMidVolatge[4] = {1.8, 1.8, 1.85, 1.85}; // Array for each Mid On / Off Voltage of the TP5100 Charge LED Pins
+	const float referenceVoltage = 5.02;							// 5V Output of Arduino
+	const float defaultBatteryCutOffVoltage = 2.8;					// Voltage that the discharge stops
+	const byte restTimeMinutes = 1;									// The time in Minutes to rest the battery after charge. 0-59 are valid
+	const int lowMilliamps = 1000;									//  This is the value of Milli Amps that is considered low and does not get recharged because it is considered faulty
+	const int highMilliOhms = 500;									//  This is the value of Milli Ohms that is considered high and the battery is considered faulty
+	const int offsetMilliOhms = 0;									// Offset calibration for MilliOhms
+	const byte chargingTimeout = 8;									// The timeout in Hours for charging
+	const byte tempThreshold = 7;									// Warning Threshold in degrees above initial Temperature
+	const byte tempMaxThreshold = 20;								//Maximum Threshold in degrees above initial Temperature - Considered Faulty
+	const float batteryVolatgeLeak = 0.50;							// On the initial screen "BATTERY CHECK" observe the highest voltage of each module and set this value slightly higher
+	const byte moduleCount = 4;										// Number of Modules
+	const byte screenTime = 4;										// Time in Seconds (Cycles) per Active Screen
+	const int dischargeReadInterval = 5000;							// Time intervals between Discharge readings. Adjust for mAh +/-
+	const float storageChargeVoltage = 0.00;						// Storage charge voltage for recharge cycle. Use 0.00 for no storage charge
 } CustomSettings;
 
 CustomSettings settings;
@@ -447,7 +447,7 @@ void cycleStateValues()
 		{
 		case 0: // Check Battery Voltage
 			if (batteryCheck(i))
-			module[i].cycleCount++;
+				module[i].cycleCount++;
 			if (module[i].cycleCount == 5)
 			{
 				initializeVariables(i);
@@ -472,7 +472,7 @@ void cycleStateValues()
 			}
 			//Check if battery has been removed
 			if (!batteryCheck(i))
-			module[i].cycleCount++;
+				module[i].cycleCount++;
 			if (module[i].cycleCount == 5)
 			{
 				module[i].cycleState = 0; // Completed and Battery Removed set cycleState to Check Battery Voltage
@@ -589,10 +589,10 @@ void cycleStateValues()
 			else
 			{
 				if (dischargeCycle(i))
-				module[i].cycleCount++;
+					module[i].cycleCount++;
 				if (module[i].cycleCount >= 10)
 				{
-					digitalSwitch(module[i].dischargeMosfetPin, 0); // Turn off Discharge Mosfet
+					digitalSwitch(module[i].dischargeMosfetPin, 0);			  // Turn off Discharge Mosfet
 					if (module[i].dischargeMilliamps < settings.lowMilliamps) // No need to recharge the battery if it has low Milliamps
 					{
 						module[i].batteryFaultCode = 5; // Set the Battery Fault Code to 5 Low Milliamps
@@ -643,8 +643,11 @@ void cycleStateValues()
 				digitalSwitch(module[i].chargeMosfetPin, 1); // Turn on TP5100
 				if (settings.storageChargeVoltage > 0.00)
 				{
-					if (module[i].batteryVoltage > (settings.storageChargeVoltage + 0.35)) module[i].cycleCount++;
-				} else {
+					if (module[i].batteryVoltage > (settings.storageChargeVoltage + 0.35))
+						module[i].cycleCount++;
+				}
+				else
+				{
 					module[i].cycleCount = module[i].cycleCount + chargeCycle(i);
 				}
 				if (module[i].cycleCount >= 10)
@@ -676,7 +679,7 @@ void cycleStateValues()
 			break;
 		case 7: // Completed
 			if (!batteryCheck(i))
-			module[i].cycleCount++;
+				module[i].cycleCount++;
 			if (module[i].cycleCount == 2)
 			{
 				module[i].cycleState = 0; // Completed and Battery Removed set cycleState to Check Battery Voltage
@@ -814,67 +817,69 @@ bool chargeCycle(byte j)
 
 byte processTemperature(byte j)
 {
-    module[j].batteryCurrentTemp = getTemperature(j);
-    if (module[j].batteryCurrentTemp > module[j].batteryHighestTemp && module[j].batteryCurrentTemp != 99)
-        module[j].batteryHighestTemp = module[j].batteryCurrentTemp; // Set highest temperature if current value is higher
-    if ((module[j].batteryCurrentTemp - ambientTemperature) > settings.tempThreshold && module[j].batteryCurrentTemp != 99)
-    {
-        if ((module[j].batteryCurrentTemp - ambientTemperature) > settings.tempMaxThreshold)
-        {
-            //Temp higher than Maximum Threshold
-            return 2;
-        }
-        else
-        {
-            //Temp higher than Threshold <- Does nothing yet need some flag / warning
-            return 1;
-        }
-    }
-    else
-    {
-        //Temp lower than Threshold
-        return 0;
-    }
+	module[j].batteryCurrentTemp = getTemperature(j);
+	if (module[j].batteryCurrentTemp > module[j].batteryHighestTemp && module[j].batteryCurrentTemp != 99)
+		module[j].batteryHighestTemp = module[j].batteryCurrentTemp; // Set highest temperature if current value is higher
+	if ((module[j].batteryCurrentTemp - ambientTemperature) > settings.tempThreshold && module[j].batteryCurrentTemp != 99)
+	{
+		if ((module[j].batteryCurrentTemp - ambientTemperature) > settings.tempMaxThreshold)
+		{
+			//Temp higher than Maximum Threshold
+			return 2;
+		}
+		else
+		{
+			//Temp higher than Threshold <- Does nothing yet need some flag / warning
+			return 1;
+		}
+	}
+	else
+	{
+		//Temp lower than Threshold
+		return 0;
+	}
 }
 
 byte getTemperature(byte j)
 {
-    if (module[j].tempCount > 16 || module[j].batteryCurrentTemp == 0 || module[j].batteryCurrentTemp == 99) // Read every 16x cycles
-    {
-        module[j].tempCount = 0;
-        sensors.requestTemperaturesByAddress(tempSensorSerial[j]);
-        float tempC = sensors.getTempC(tempSensorSerial[j]);
-        if (tempC > 99 || tempC < 0)
-        {
-            tempC = 99;
-            if (module[j].batteryCurrentTemp != 99)
-                tempC = module[j].batteryCurrentTemp;
-        }
-        return (int)tempC;
-    }
-    else
-    {
-        module[j].tempCount++;
-        return module[j].batteryCurrentTemp;
-    }
+	if (module[j].tempCount > 16 || module[j].batteryCurrentTemp == 0 || module[j].batteryCurrentTemp == 99) // Read every 16x cycles
+	{
+		module[j].tempCount = 0;
+		sensors.requestTemperaturesByAddress(tempSensorSerial[j]);
+		float tempC = sensors.getTempC(tempSensorSerial[j]);
+		if (tempC > 99 || tempC < 0)
+		{
+			tempC = 99;
+			if (module[j].batteryCurrentTemp != 99)
+				tempC = module[j].batteryCurrentTemp;
+		}
+		return (int)tempC;
+	}
+	else
+	{
+		module[j].tempCount++;
+		return module[j].batteryCurrentTemp;
+	}
 }
 
 void getAmbientTemperature()
 {
-    static byte ambientTempCount;
-    if (ambientTempCount > 16 || ambientTemperature == 0) // Read every 16x cycles
-    {
-        ambientTempCount = 0;
-        sensors.requestTemperaturesByAddress(tempSensorSerial[8]);
-        float tempC = sensors.getTempC(tempSensorSerial[8]);
-        if (tempC > 99 || tempC < 0)
-            tempC = 99;
-        ambientTemperature = tempC;
-    }
-    else
-    {
-        ambientTempCount++;
-    }
+	static byte ambientTempCount;
+	if (ambientTempCount > 16 || ambientTemperature == 0 || ambientTemperature == 99) // Read every 16x cycles
+	{
+		ambientTempCount = 0;
+		sensors.requestTemperaturesByAddress(tempSensorSerial[5]);
+		float tempC = sensors.getTempC(tempSensorSerial[5]);
+		if (tempC > 99 || tempC < 0)
+			tempC = 99;
+		if (ambientTemperature != 99)
+			tempC = ambientTemperature;
+		ambientTemperature = tempC;
+	}
+	else
+	{
+		ambientTempCount++;
+	}
 }
 
 bool batteryCheck(byte j)
