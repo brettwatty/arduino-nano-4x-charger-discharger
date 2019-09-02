@@ -871,9 +871,11 @@ void getAmbientTemperature()
 		sensors.requestTemperaturesByAddress(tempSensorSerial[4]);
 		float tempC = sensors.getTempC(tempSensorSerial[4]);
 		if (tempC > 99 || tempC < 0)
+		{
 			tempC = 99;
-		if (ambientTemperature != 99)
-			tempC = ambientTemperature;
+			if (ambientTemperature != 99)
+				tempC = ambientTemperature;
+		}
 		ambientTemperature = tempC;
 	}
 	else
