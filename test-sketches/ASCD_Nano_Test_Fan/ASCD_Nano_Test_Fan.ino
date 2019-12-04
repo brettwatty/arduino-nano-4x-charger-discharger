@@ -17,7 +17,7 @@
 // Fan pin 5 PWM Digital
 const byte FAN = 5; // PCB Version 1.11+ only
 
-byte ambientTemperature = 23;
+byte ambientTemperature = 20;
 
 void setup()
 {
@@ -31,9 +31,9 @@ void setup()
 void loop()
 {
 
-  if (ambientTemperature > 36)
+  if (ambientTemperature > 40)
   {
-    ambientTemperature = 23;
+    ambientTemperature = 20;
   }
   else
   {
@@ -42,21 +42,29 @@ void loop()
   fanController();
   Serial.print("Ambient Temperature:");
   Serial.println(ambientTemperature);
-  delay(2000);
+  delay(10000);
 }
 
 void fanController()
 {
+  static boolean fanOn = 0;
   const byte fanTempMin = 25; // The temperature to start the fan
   const byte fanTempMax = 35; // The maximum temperature when fan is at 100%
+  byte fanSpeed;
   if (ambientTemperature < fanTempMin)
   {
     digitalWrite(FAN, LOW);
     Serial.println("FAN OFF");
+    fanOn = 0;
   }
   else if (ambientTemperature < fanTempMax)
   {
-    byte fanSpeed = map(ambientTemperature, fanTempMin, fanTempMax, 50, 200);
+    if (fanOn == 0) {
+      fanSpeed = 255;
+      fanOn = 1;
+    } else {
+    fanSpeed = map(ambientTemperature, fanTempMin, fanTempMax, 100, 250);
+    }
     Serial.print("FAN Speed:");
     Serial.println(fanSpeed);
     analogWrite(FAN, fanSpeed); // PWM speed control the FAN pin

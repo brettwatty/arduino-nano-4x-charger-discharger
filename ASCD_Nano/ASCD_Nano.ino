@@ -9,7 +9,7 @@
 // @brief
 // ASDC Nano 4x Arduino Charger / Discharger
 // Main code for the Arduino Nano 3.0 ATmega328P
-// Version 1.0.0
+// Version 1.0.2
 //
 // @author Email: info@vortexit.co.nz
 //       Web: www.vortexit.co.nz
@@ -185,19 +185,21 @@ void setup()
 	lcd.clear();
 	lcd.backlight(); // Turn on backlight
 	lcd.setCursor(0, 0);
-	lcd.print(F("ASCD NANO V1.0.0"));
+	lcd.print(F("ASCD NANO V1.0.2"));
 	lcd.setCursor(0, 1);
 	lcd.print(F("Init TP5100....."));
 
 	// Set All Digital Outputs on the Shift Register to LOW
 	for (byte i = 0; i < settings.moduleCount; i++)
 	{
+		digitalWrite(FAN, HIGH); // Fan On
 		digitalSwitch(module[i].chargeMosfetPin, 1);
 		delay(500);
 		digitalSwitch(module[i].chargeMosfetPin, 0);
 		delay(500);
 		readMux(module[i].batteryVolatgePin); // Read each batteryVolatgePin to pre pull down voltage to 0.00v
 		digitalSwitch(module[i].dischargeMosfetPin, 1);
+		digitalWrite(FAN, LOW); // Fan Off
 		delay(500);
 		digitalSwitch(module[i].dischargeMosfetPin, 0);
 		delay(500);
@@ -269,20 +271,46 @@ void buzzer()
 
 void fanController()
 {
+	static boolean fanOn = 0;
 	const byte fanTempMin = 28; // The temperature to start the fan
 	const byte fanTempMax = 38; // The maximum temperature when fan is at 100%
-	if (ambientTemperature < fanTempMin)
+	boolean dischargeFanOn = false;
+	int fanSpeed = map(ambientTemperature, fanTempMin, fanTempMax, settings.pwmFanMinStart, 252);
+	for (byte j = 0; j < settings.moduleCount; j++)
 	{
-		digitalWrite(FAN, LOW);
+		if (module[j].cycleState == 5)
+		{
+			dischargeFanOn = true;
+		}
 	}
-	else if (ambientTemperature < fanTempMax)
+	if (dischargeFanOn == true)
 	{
-		byte fanSpeed = map(ambientTemperature, fanTempMin, fanTempMax, 41, 100);
-		analogWrite(FAN, fanSpeed); // PWM speed control the FAN pin
+		digitalWrite(FAN, HIGH); // Fan full speed if any Modules are running a Discharge Cycle
 	}
 	else
 	{
-		digitalWrite(FAN, HIGH);
+		if (ambientTemperature < fanTempMin)
+		{
+			digitalWrite(FAN, LOW);
+			fanOn = 0;
+		}
+		else if (ambientTemperature < fanTempMax)
+		{
+			if (fanOn == 0)
+			{
+				fanSpeed = 255;
+				fanOn = 1;
+			}
+			else
+			{
+				analogWrite(FAN, fanSpeed); // PWM speed control the FAN pin
+			}
+		}
+		else
+		{
+			digitalWrite(FAN, HIGH); // Fan full speed
+			fanOn = 1;
+		}
 	}
 }
 
