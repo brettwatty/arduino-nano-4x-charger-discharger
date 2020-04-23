@@ -131,6 +131,7 @@ typedef struct
 	const byte screenTime = 4;										// Time in Seconds (Cycles) per Active Screen
 	const int dischargeReadInterval = 5000;							// Time intervals between Discharge readings. Adjust for mAh +/-
 	const float storageChargeVoltage = 0.00;						// Storage charge voltage for recharge cycle. Use 0.00 for no storage charge
+	const byte pwmFanMinStart = 115;								// Minimum PWM value when the Fan will start spinning
 } CustomSettings;
 
 CustomSettings settings;
