@@ -18,6 +18,7 @@
 #define ONE_WIRE_BUS 4 // Pin 4 Temperature Sensors
 
 //Include Libraries
+#include <Arduino.h>
 #include <Wire.h> // Comes with Arduino IDE
 #include <OneWire.h>
 #include <LiquidCrystal_I2C.h>
