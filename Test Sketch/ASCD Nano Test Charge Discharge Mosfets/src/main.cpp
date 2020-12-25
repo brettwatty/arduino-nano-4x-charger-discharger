@@ -52,6 +52,9 @@ Modules module[modules] =
         {4, 5},
         {6, 7}};
 
+//Function declaration
+void digitalSwitch(byte j, bool value);
+
 void setup()
 {
 

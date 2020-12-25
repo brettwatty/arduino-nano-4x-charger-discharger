@@ -73,6 +73,10 @@ float chargeLedPinMid[4];
 void digitalSwitch(byte j, bool value);
 float readMux(bool inputArray[]);
 
+//Function declaration
+void digitalSwitch(byte j, bool value);
+float readMux(bool inputArray[]);
+
 void setup()
 {
     // Set pins to output so you can control the shift register
