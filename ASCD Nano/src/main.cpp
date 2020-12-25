@@ -19,7 +19,6 @@
 
 //Include Libraries
 #include <Arduino.h>
-#include <Wire.h> // Comes with Arduino IDE
 #include <OneWire.h>
 #include <LiquidCrystal_I2C.h>
 #include <DallasTemperature.h>
