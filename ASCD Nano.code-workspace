@@ -7,26 +7,6 @@
 		{
 			"name": "ESP8266 Wifi Client",
 			"path": "ESP8266 Wifi Client"
-		},
-		{
-			"name": "ASCD Nano Get Charge Led Mid Voltage",
-			"path": "Test Sketch\\ASCD Nano Get Charge Led Mid Voltage"
-		},
-		{
-			"name": "ASCD Nano Get DS18B20 Serials",
-			"path": "Test Sketch\\ASCD Nano Get DS18B20 Serials"
-		},
-		{
-			"path": "Test Sketch\\ASCD Nano Test Charge Discharge Mosfets"
-		},
-		{
-			"path": "Test Sketch\\ASCD Nano Test Charge LED Pin"
-		},
-		{
-			"path": "Test Sketch\\ASCD Nano Test Fan"
-		},
-		{
-			"path": "Test Sketch\\ASCD Nano Test LCD Screen"
 		}
 	]
 }
