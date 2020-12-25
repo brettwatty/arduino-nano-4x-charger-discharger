@@ -61,11 +61,11 @@ const byte FAN = 5; // PCB Version 1.11+ only
 typedef struct
 {
 	// Pin Definitions
-	const bool batteryVolatgePin[4];
-	const bool batteryVolatgeDropPin[4];
-	const bool chargeLedPin[4];
-	const byte chargeMosfetPin;
-	const byte dischargeMosfetPin;
+	bool batteryVolatgePin[4];
+	bool batteryVolatgeDropPin[4];
+	bool chargeLedPin[4];
+	byte chargeMosfetPin;
+	byte dischargeMosfetPin;
 
 	// Timmer
 	unsigned long longMilliSecondsCleared;
