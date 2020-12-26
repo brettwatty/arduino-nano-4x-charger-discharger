@@ -15,6 +15,7 @@
 //       Web: www.vortexit.co.nz
 
 // Include the libraries we need
+#include <Arduino.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
@@ -36,6 +37,12 @@ bool tempSensorSerialCompleted[10];
 bool detectionComplete = false;
 byte tempSensorSerialOutput[5]; //Sensors 1 - 5
 byte pendingDetection = 0;      // This will be from Battery 1 to 4 and then 5 for the ambient temperature
+
+//Function declaration
+void printAddress(DeviceAddress deviceAddress, bool first, bool last, bool comma);
+byte useOneWireSearch();
+void printTemperature(DeviceAddress deviceAddress);
+void printResolution(DeviceAddress deviceAddress);
 
 void setup(void)
 {

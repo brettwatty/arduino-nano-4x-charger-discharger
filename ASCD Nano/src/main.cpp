@@ -18,7 +18,7 @@
 #define ONE_WIRE_BUS 4 // Pin 4 Temperature Sensors
 
 //Include Libraries
-#include <Wire.h> // Comes with Arduino IDE
+#include <Arduino.h>
 #include <OneWire.h>
 #include <LiquidCrystal_I2C.h>
 #include <DallasTemperature.h>
@@ -60,11 +60,11 @@ const byte FAN = 5; // PCB Version 1.11+ only
 typedef struct
 {
 	// Pin Definitions
-	const bool batteryVolatgePin[4];
-	const bool batteryVolatgeDropPin[4];
-	const bool chargeLedPin[4];
-	const byte chargeMosfetPin;
-	const byte dischargeMosfetPin;
+	bool batteryVolatgePin[4];
+	bool batteryVolatgeDropPin[4];
+	bool chargeLedPin[4];
+	byte chargeMosfetPin;
+	byte dischargeMosfetPin;
 
 	// Timmer
 	unsigned long longMilliSecondsCleared;
@@ -142,6 +142,29 @@ boolean readSerialResponse = false;
 char serialSendString[400];
 byte countSerialSend = 0;
 boolean soundBuzzer = false;
+
+//Function declaration
+void buzzer();
+void fanController();
+void sendSerial();
+void readSerial();
+void button();
+void cycleStateLCD();
+void secondsTimer(byte j);
+void clearSecondsTimer(byte j);
+void initializeVariables(byte j);
+void cycleStateValues();
+void cycleStateLCDOutput(byte j);
+bool dischargeCycle(byte j);
+byte milliOhms(byte j);
+bool chargeCycle(byte j);
+byte processTemperature(byte j);
+byte getTemperature(byte j);
+void getAmbientTemperature();
+bool batteryCheck(byte j);
+void digitalSwitch(byte j, bool value);
+float readMux(bool inputArray[]);
+void returnCodes(int codeID);
 
 void setup()
 {
@@ -299,7 +322,6 @@ void fanController()
 		{
 			if (fanOn == 0)
 			{
-				fanSpeed = 255;
 				fanOn = 1;
 			}
 			else
@@ -788,13 +810,12 @@ void cycleStateLCDOutput(byte j)
 
 bool dischargeCycle(byte j)
 {
-	float batteryShuntVoltage = 0.00;
 	module[j].intMilliSecondsCount = module[j].intMilliSecondsCount + (millis() - module[j].longMilliSecondsPreviousCount);
 	module[j].longMilliSecondsPreviousCount = millis();
 	if (module[j].intMilliSecondsCount >= settings.dischargeReadInterval || module[j].dischargeAmps == 0) // Get reading every 5+ seconds or if dischargeAmps = 0 then it is first run
 	{
 		module[j].dischargeVoltage = readMux(module[j].batteryVolatgePin);
-		batteryShuntVoltage = readMux(module[j].batteryVolatgeDropPin);
+		float batteryShuntVoltage = readMux(module[j].batteryVolatgeDropPin);
 		if (module[j].dischargeVoltage >= settings.defaultBatteryCutOffVoltage)
 		{
 			digitalSwitch(module[j].dischargeMosfetPin, 1); // Turn on Discharge Mosfet

@@ -27,6 +27,8 @@
 // @author Email: info@vortexit.co.nz
 //       Web: www.vortexit.co.nz
 
+#include <Arduino.h>
+
 // Latch pin (ST_CP) of 74HC595
 const byte latchPin = 7;
 // Clock pin (SH_CP) of 74HC595
@@ -49,11 +51,11 @@ const float batteryVolatgeLeak = 0.50;
 typedef struct
 {
     // Pin Definitions
-    const bool batteryVolatgePin[4];
-    const bool batteryVolatgeDropPin[4];
-    const bool chargeLedPin[4];
-    const byte chargeMosfetPin;
-    const byte dischargeMosfetPin;
+    bool batteryVolatgePin[4];
+    bool batteryVolatgeDropPin[4];
+    bool chargeLedPin[4];
+    byte chargeMosfetPin;
+    byte dischargeMosfetPin;
 } Modules;
 
 Modules module[modules] =
@@ -62,6 +64,11 @@ Modules module[modules] =
         {{1, 0, 0, 1}, {0, 1, 1, 1}, {0, 0, 0, 1}, 2, 3},
         {{1, 1, 1, 0}, {1, 0, 1, 1}, {0, 1, 1, 0}, 4, 5},
         {{1, 0, 1, 0}, {0, 0, 1, 1}, {0, 0, 1, 0}, 6, 7}};
+
+//Function declaration
+float readMux(bool inputArray[]);
+long readVcc();
+void digitalSwitch(byte j, bool value);
 
 void setup()
 {

@@ -21,8 +21,9 @@
 //
 // @author Email: info@vortexit.co.nz
 //       Web: www.vortexit.co.nz
-
+#include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
+
 LiquidCrystal_I2C lcd(0x27, 16, 2); // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 // Latch pin (ST_CP) of 74HC595
@@ -44,11 +45,11 @@ const byte SIG = 14;
 typedef struct
 {
     // Pin Definitions
-    const bool batteryVolatgePin[4];
-    const bool batteryVolatgeDropPin[4];
-    const bool chargeLedPin[4];
-    const byte chargeMosfetPin;
-    const byte dischargeMosfetPin;
+    bool batteryVolatgePin[4];
+    bool batteryVolatgeDropPin[4];
+    bool chargeLedPin[4];
+    byte chargeMosfetPin;
+    byte dischargeMosfetPin;
 } Modules;
 
 Modules module[4] =
@@ -67,6 +68,10 @@ typedef struct
 CustomSettings settings;
 
 float chargeLedPinMid[4];
+
+//Function declaration
+void digitalSwitch(byte j, bool value);
+float readMux(bool inputArray[]);
 
 void setup()
 {

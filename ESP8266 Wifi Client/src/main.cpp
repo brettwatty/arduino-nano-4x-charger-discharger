@@ -32,6 +32,10 @@ String updateUnitDataString = "";
 
 WiFiClient client;
 
+//Function declaration
+String updateUnitData();
+String readPage();
+
 void setup()
 {
   Serial.begin(57600);

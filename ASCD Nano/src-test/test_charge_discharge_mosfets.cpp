@@ -27,6 +27,8 @@
 // @author Email: info@vortexit.co.nz
 //       Web: www.vortexit.co.nz
 
+#include <Arduino.h>
+
 // Latch pin (ST_CP) of 74HC595
 const byte latchPin = 7;
 // Clock pin (SH_CP) of 74HC595
@@ -49,6 +51,9 @@ Modules module[modules] =
         {2, 3},
         {4, 5},
         {6, 7}};
+
+//Function declaration
+void digitalSwitch(byte j, bool value);
 
 void setup()
 {

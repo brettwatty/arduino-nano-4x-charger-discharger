@@ -14,6 +14,8 @@
 // @author Email: info@vortexit.co.nz
 //       Web: www.vortexit.co.nz
 
+#include <Arduino.h>
+
 // Fan pin 5 PWM Digital
 const byte FAN = 5; // PCB Version 1.11+ only
 
