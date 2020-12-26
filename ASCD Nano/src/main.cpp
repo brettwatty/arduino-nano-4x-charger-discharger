@@ -29,7 +29,7 @@
 LiquidCrystal_I2C lcd(0x27, 16, 2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 OneWire oneWire(ONE_WIRE_BUS);		 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 DallasTemperature sensors(&oneWire); // Pass our oneWire reference to Dallas Temperature.
-SoftwareSerial ESP8266(3, 2);		 // RX , TX	
+SoftwareSerial ESP8266(3, 2);		 // RX , TX
 
 // Latch pin (ST_CP) of 74HC595
 const byte latchPin = 7;
